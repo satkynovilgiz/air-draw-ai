@@ -1,6 +1,165 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Air Draw — Your hands. Your canvas.</title><link rel="stylesheet" href="/static/style.css"></head><body>
-<header><a class="brand" href="/">air<span>draw</span><b>✳</b></a><span class="tag">A LITTLE SPACE TO CREATE</span><span class="local">● Local Python AI</span></header>
-<main><section class="intro"><div><div class="eyebrow">TOUCH NOTHING. MAKE SOMETHING.</div><h1>Your hands.<br><em>Your canvas.</em></h1></div><div class="intro-right"><p>Turn a small gesture into a big idea.<br>Pinch your fingers. Follow your imagination.</p><button id="start" class="primary">↗ Start camera</button></div></section>
-<section class="studio"><div class="topbar"><span><i id="dot"></i><strong id="status" role="status" aria-live="polite">Ready when you are</strong></span><span id="mode">MOUSE MODE</span></div><div class="stage" id="stage"><video id="video" playsinline muted></video><canvas id="art" width="1280" height="720" aria-label="Drawing canvas"></canvas><canvas id="overlay" width="1280" height="720"></canvas><div id="empty"><div class="orbit">✳</div><h2>A blank canvas. Endless possibilities.</h2><p>Start your camera, or click and drag to draw.</p></div><div class="canvas-label">AIR DRAW / STUDIO 01</div></div>
-<div class="toolbar"><div class="swatches" aria-label="Brush colors"><button class="swatch selected" data-color="#b6f36c" style="--swatch:#b6f36c" aria-label="Lime" aria-pressed="true"></button><button class="swatch" data-color="#f4f0e8" style="--swatch:#f4f0e8" aria-label="Ivory" aria-pressed="false"></button><button class="swatch" data-color="#ff917b" style="--swatch:#ff917b" aria-label="Coral" aria-pressed="false"></button><button class="swatch" data-color="#9ca8ff" style="--swatch:#9ca8ff" aria-label="Lavender" aria-pressed="false"></button><input id="custom" type="color" value="#b6f36c" aria-label="Custom brush color"></div><label class="size">Brush <input id="size" type="range" min="2" max="28" value="7"><output id="sizeLabel">7</output></label><div class="actions"><button id="undo">↶ Undo</button><button id="clear">Clear</button><button id="save" class="save">↓ Save PNG</button></div></div></section>
-<div class="below"><div><b>01</b><span><strong>Find your light</strong><small>Keep one hand visible in good lighting.</small></span></div><div><b>02</b><span><strong>Pinch to draw</strong><small>Touch thumb + index. Release to move.</small></span></div><div><b>03</b><span><strong>Make it yours</strong><small>Pick a color, make your mark, save it.</small></span></div></div><p id="error" role="alert"></p><footer><span>Made for the joy of making.</span><span>Frames stay on your computer · No account needed</span></footer></main><script src="/static/app.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Air Draw AI</title>
+
+  <link rel="stylesheet" href="/static/style.css">
+  <script src="/static/app.js" defer></script>
+</head>
+
+<body>
+  <header>
+    <a class="logo" href="/">Air Draw<span> AI</span></a>
+    <span class="header-note">Python + MediaPipe</span>
+  </header>
+
+  <main>
+    <section class="intro">
+      <div>
+        <h1>Draw with your hand.</h1>
+        <p>
+          Turn on your camera and pinch your thumb and index finger
+          together to draw.
+        </p>
+      </div>
+
+      <button id="start" class="primary" type="button">
+        Start camera
+      </button>
+    </section>
+
+    <section class="studio" aria-label="Drawing studio">
+      <div class="topbar">
+        <div class="tracking-status">
+          <span id="dot" aria-hidden="true"></span>
+
+          <span id="status" role="status" aria-live="polite">
+            Ready to draw
+          </span>
+        </div>
+
+        <span id="mode">MOUSE MODE</span>
+      </div>
+
+      <div class="stage" id="stage">
+        <video id="video" playsinline muted aria-hidden="true"></video>
+
+        <canvas
+          id="art"
+          width="1280"
+          height="720"
+          aria-label="Drawing canvas"
+        >
+          Your browser does not support canvas.
+        </canvas>
+
+        <canvas
+          id="overlay"
+          width="1280"
+          height="720"
+          aria-hidden="true"
+        ></canvas>
+
+        <div id="empty">
+          <h2>Try drawing something</h2>
+          <p>Start your camera or use your mouse.</p>
+        </div>
+      </div>
+
+      <div class="toolbar">
+        <div class="swatches" role="group" aria-label="Brush colors">
+          <button
+            type="button"
+            class="swatch selected"
+            data-color="#b6f36c"
+            style="--swatch: #b6f36c"
+            aria-label="Green"
+            aria-pressed="true"
+          ></button>
+
+          <button
+            type="button"
+            class="swatch"
+            data-color="#f4f0e8"
+            style="--swatch: #f4f0e8"
+            aria-label="White"
+            aria-pressed="false"
+          ></button>
+
+          <button
+            type="button"
+            class="swatch"
+            data-color="#ff917b"
+            style="--swatch: #ff917b"
+            aria-label="Orange"
+            aria-pressed="false"
+          ></button>
+
+          <button
+            type="button"
+            class="swatch"
+            data-color="#9ca8ff"
+            style="--swatch: #9ca8ff"
+            aria-label="Purple"
+            aria-pressed="false"
+          ></button>
+
+          <input
+            id="custom"
+            type="color"
+            value="#b6f36c"
+            aria-label="Choose a custom color"
+          >
+        </div>
+
+        <div class="brush-control">
+          <label for="size">Brush size</label>
+
+          <input
+            id="size"
+            type="range"
+            min="2"
+            max="28"
+            value="7"
+          >
+
+          <output id="sizeLabel" for="size">7</output>
+        </div>
+
+        <div class="actions">
+          <button id="undo" type="button">Undo</button>
+          <button id="clear" type="button">Clear</button>
+          <button id="save" class="save" type="button">Save PNG</button>
+        </div>
+      </div>
+    </section>
+
+    <p id="error" role="alert"></p>
+
+    <section class="instructions" aria-label="How to draw">
+      <div>
+        <h3>1. Start your camera</h3>
+        <p>Allow camera access and keep one hand visible.</p>
+      </div>
+
+      <div>
+        <h3>2. Pinch to draw</h3>
+        <p>Touch your thumb and index finger. Release to move.</p>
+      </div>
+
+      <div>
+        <h3>3. Save your drawing</h3>
+        <p>Choose a color and brush size, then download your PNG.</p>
+      </div>
+    </section>
+
+    <footer>
+      <span>Air Draw AI</span>
+      <span>Stop the camera to draw with your mouse.</span>
+    </footer>
+  </main>
+</body>
+</html>
